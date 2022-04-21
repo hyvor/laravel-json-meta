@@ -1,0 +1,32 @@
+{
+    "name": "hyvor/laravel-json-meta",
+    "description": "Strict meta data for Eloquent Models, saved in JSON columns",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Supun Kavinda",
+            "email": "supun@hyvor.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Hyvor\\JsonMeta\\": "src",
+            "Hyvor\\JsonMeta\\Database\\Factories\\": "database/factories",
+            "Hyvor\\JsonMeta\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit": "^9.5",
+        "pestphp/pest": "^1.21"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
