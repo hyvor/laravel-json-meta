@@ -13,12 +13,13 @@ class TestModel extends Model
     use HasFactory;
     use Metable;
 
+    protected $table = 'test_table';
+
     public function metaDefinition(Definer $definer)
     {
 
-        $definer->add('api_key')
-            ->type('string|null')
-            ->default(null);
+        $definer->add('option_1')->type('string|null')->default(null);
+        $definer->add('option_2')->type('string|int')->default(20);
 
     }
 

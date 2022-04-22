@@ -124,12 +124,12 @@ To get a meta value. If the value is not found in meta field, the default value 
 $seoIndexingOn = $blog->getMeta('seo_indexing');
 ```
 
-**getMetas() : object**
+**getAllMeta() : object**
 
 To get all meta values. All keys you define in `metaDefinition` function will be set in the returned object, filled with default values if missing in the `meta` field.
 
 ```php
-$meta = $blog->getMetas();
+$meta = $blog->getAllMeta();
 
 if ($meta->seo_indexing) {
     echo "Hey Google, Please index me!";

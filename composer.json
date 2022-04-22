@@ -12,7 +12,6 @@
     "autoload": {
         "psr-4": {
             "Hyvor\\JsonMeta\\": "src",
-            "Hyvor\\JsonMeta\\Database\\Factories\\": "database/factories",
             "Hyvor\\JsonMeta\\Tests\\": "tests"
         }
     },
@@ -22,7 +21,8 @@
     "require-dev": {
         "orchestra/testbench": "^7.0",
         "phpunit/phpunit": "^9.5",
-        "pestphp/pest": "^1.21"
+        "pestphp/pest": "^1.21",
+        "phpstan/phpstan": "^1.5"
     },
     "config": {
         "allow-plugins": {

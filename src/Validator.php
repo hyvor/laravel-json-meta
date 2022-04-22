@@ -5,10 +5,26 @@ namespace Hyvor\JsonMeta;
 class Validator
 {
 
+    const SUPPORTED_TYPES =
+        [
+            'string',
+            'int',
+            'float',
+            'bool',
+            'null',
+            'enum'
+        ];
+
+    /**
+     * @param string[] $types
+     * @param mixed $value
+     * @return bool
+     */
     public static function validate(array $types, mixed $value) : bool
     {
 
         $valid = false;
+
 
         foreach ($types as $type) {
 
@@ -49,6 +65,12 @@ class Validator
 
         return $valid;
 
+    }
+
+    public static function validateType(string $type) : bool
+    {
+        $type = explode(':', $type)[0]; // for enums
+        return in_array($type, self::SUPPORTED_TYPES);
     }
 
 }
