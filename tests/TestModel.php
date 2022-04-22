@@ -21,6 +21,9 @@ class TestModel extends Model
         $definer->add('option_1')->type('string|null')->default(null);
         $definer->add('option_2')->type('string|int')->default(20);
 
+        // no type checking
+        $definer->add('option_3');
+
     }
 
     protected static function newFactory()

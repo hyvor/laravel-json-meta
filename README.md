@@ -2,7 +2,6 @@
 
 A library for saving metadata in a JSON column, with type checking.
 
-* Only for databases that support JSON columns
 * Best for saving configuration options
 * Nested objects are not supported
 
@@ -11,8 +10,6 @@ A library for saving metadata in a JSON column, with type checking.
 ```bash
 composer install hyvor/laravel-json-meta
 ```
-
-
 
 ## Usage
 
@@ -27,6 +24,8 @@ Schema::create('blogs', function (Blueprint $table) {
     $table->json('meta')->nullable();
 });
 ```
+
+> If your database does not support native JSON columns, Laravel will create a TEXT column, which works fine with this library.
 
 ### Metadata or column?
 

@@ -69,7 +69,10 @@ trait Metable
             $definition = $this->metaDefiner->get($metaName);
             $types = $definition->getTypes();
 
-            if (!Validator::validate($types, $metaValue)) {
+            if (
+                $types !== null &&
+                !Validator::validate($types, $metaValue)
+            ) {
                 throw new MetableException(
                     "Invalid value type for $metaName in {$this->getTable()} table"
                 );

@@ -61,3 +61,20 @@ it('sets meta multi', function() {
     $this->assertEquals($meta->option_2, 50);
 
 });
+
+it('sets meta without type and default', function() {
+
+
+    $model = TestModel::create();
+
+    // default is null
+    $this->assertEquals(null, $model->getMeta('option_3'));
+
+    $model->setMeta([
+        'option_3' => 50
+    ]);
+    $newModel = TestModel::find($model->id);
+
+    $this->assertEquals(50, $newModel->getMeta('option_3'));
+
+});
