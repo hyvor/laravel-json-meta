@@ -8,7 +8,7 @@ A library for saving metadata in a JSON column, with type checking.
 ## Installation
 
 ```bash
-composer install hyvor/laravel-json-meta
+composer require hyvor/laravel-json-meta
 ```
 
 ## Usage
