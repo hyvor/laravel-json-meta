@@ -12,7 +12,11 @@ class TestCase extends TestbenchTestCase
 
         parent::setUp();
 
-        $this->app['db']->connection()->getSchemaBuilder()->create('test_table', function(Blueprint $table) {
+        $schema = $this->app['db']->connection()->getSchemaBuilder();
+
+        $schema->dropIfExists('test_table');
+
+        $schema->create('test_table', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->json('meta')->nullable();
