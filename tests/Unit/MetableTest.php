@@ -78,3 +78,10 @@ it('sets meta without type and default', function() {
     $this->assertEquals(50, $newModel->getMeta('option_3'));
 
 });
+
+it('gets all keys', function() {
+
+    $model = TestModel::create();
+    $this->assertEquals(['option_1', 'option_2', 'option_3'], $model->getMetaKeys());
+
+});

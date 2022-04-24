@@ -90,6 +90,16 @@ trait Metable
 
     }
 
+    /**
+     * @return string[]
+     */
+    public function getMetaKeys() : array
+    {
+        $this->ensureDefiner();
+        $metas = $this->metaDefiner->getAll();
+        return array_keys($metas);
+    }
+
 
     private function ensureDefiner()
     {
