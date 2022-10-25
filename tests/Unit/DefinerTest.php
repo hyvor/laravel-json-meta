@@ -2,8 +2,8 @@
 
 namespace Hyvor\JsonMeta\Tests\Unit;
 
-use Hyvor\JsonMeta\Definer;
-use Hyvor\JsonMeta\Definition;
+use Definer;
+use Definition;
 
 it('adds and returns definition', function() {
 

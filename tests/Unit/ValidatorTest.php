@@ -2,7 +2,7 @@
 
 namespace Hyvor\JsonMeta\Tests\Unit;
 
-use Hyvor\JsonMeta\Validator;
+use Validator;
 
 it('validates strings', function() {
 

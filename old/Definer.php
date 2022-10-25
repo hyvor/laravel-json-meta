@@ -1,6 +1,5 @@
 <?php
 
-namespace Hyvor\JsonMeta;
 
 class Definer
 {

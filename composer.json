@@ -22,7 +22,7 @@
         "orchestra/testbench": "^7.0",
         "phpunit/phpunit": "^9.5",
         "pestphp/pest": "^1.21",
-        "phpstan/phpstan": "^1.5"
+        "phpstan/phpstan": "^1.8.10"
     },
     "config": {
         "allow-plugins": {

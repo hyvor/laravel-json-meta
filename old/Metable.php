@@ -1,7 +1,4 @@
 <?php
-namespace Hyvor\JsonMeta;
-
-use stdClass;
 
 trait Metable
 {

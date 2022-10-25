@@ -1,6 +1,5 @@
 <?php
 
-use Hyvor\JsonMeta\MetableException;
 use Hyvor\JsonMeta\Tests\TestModel;
 
 it('gets default meta', function () {

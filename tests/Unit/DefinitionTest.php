@@ -2,8 +2,8 @@
 
 namespace Hyvor\JsonMeta\Tests\Unit;
 
-use Hyvor\JsonMeta\Definition;
-use Hyvor\JsonMeta\MetableException;
+use Definition;
+use MetableException;
 
 it('constructs and gets name', function() {
 

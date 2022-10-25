@@ -2,10 +2,10 @@
 
 namespace Hyvor\JsonMeta\Tests;
 
-use Hyvor\JsonMeta\Definer;
-use Hyvor\JsonMeta\Metable;
+use Definer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Metable;
 
 class TestModel extends Model
 {

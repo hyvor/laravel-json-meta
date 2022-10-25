@@ -39,8 +39,7 @@ When saving data, you have to decide between meta vs column.  Our general rule i
 * Declare the `metaDefinition` method
 
 ```php
-use Hyvor\JsonMeta\Metable;
-use Hyvor\JsonMeta\Definer;
+
 
 class Blog extends Model
 {
