@@ -1,8 +1,9 @@
 <?php
 
-namespace Hyvor\JsonMeta\PHPStan;
+namespace Hyvor\JsonMeta\PHPStan\DynamicReturnType;
 
 use Hyvor\JsonMeta\HasMeta;
+use Hyvor\JsonMeta\PHPStan\DefineMetaParser;
 use Illuminate\Database\Eloquent\Model;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
@@ -10,10 +11,7 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
-use PHPStan\Type\IntegerType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\StaticType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 
 class MetaDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension

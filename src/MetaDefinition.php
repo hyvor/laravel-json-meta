@@ -16,7 +16,15 @@ class MetaDefinition
     /**
      * @var array<string, Field<mixed>>
      */
-    public array $fields;
+    private array $fields;
+
+    /**
+     * @return array<string, Field<mixed>>
+     */
+    public function getFields() : array
+    {
+        return $this->fields;
+    }
 
     /**
      * @template FieldType of Field

@@ -41,18 +41,39 @@ trait HasMeta
     public function getAllMeta() : mixed
     {
 
-        $fromTable = $this->meta;
+        $this->ensureMetaDefinition();
 
+        $metaFromTable = $this->getMetaFromTable();
+        $ret = [];
+
+        $fields = $this->metaDefinition->getFields();
+        foreach ($fields as $name => $field) {
+            $ret[$name] = array_key_exists($name, $metaFromTable) ? $field->get($metaFromTable[$name]) : $field->getDefault();
+        }
+
+        return (object) $ret;
 
     }
 
     /**
-     * @return array
+     * Get meta from table regardless of the casts used in the model
+     * supports string, array, and object
+     * @return array<string, mixed>
      */
     private function getMetaFromTable() : array
     {
 
+        $meta = $this->meta;
 
+        if (is_string($meta)) {
+            return json_decode($meta, true) ?? [];
+        } else if (is_array($meta)) {
+            return $meta;
+        } else if (is_object($meta)) {
+            return (array)$meta;
+        }
+
+        return [];
 
     }
 
@@ -67,7 +88,7 @@ trait HasMeta
     }
 
 
-    private function setMetaDefinition()
+    private function ensureMetaDefinition()
     {
 
         if (!isset($this->metaDefinition)) {

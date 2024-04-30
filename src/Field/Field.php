@@ -56,6 +56,11 @@ abstract class Field
         return $this->getCastedValue($value);
     }
 
+    public function getDefault() : mixed
+    {
+        return $this->default;
+    }
+
 
     /**
      * @param mixed $value
