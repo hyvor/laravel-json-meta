@@ -16,7 +16,7 @@ class MetaDefinition
     /**
      * @var array<string, Field<mixed>>
      */
-    private array $fields;
+    public array $fields;
 
     /**
      * @template FieldType of Field

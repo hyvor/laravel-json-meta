@@ -10,11 +10,18 @@ use PHPStan\Analyser\ScopeFactory;
 use PHPStan\DependencyInjection\Container;
 use PHPStan\Parser\Parser;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\BooleanType;
+use PHPStan\Type\FloatType;
 use PHPStan\Type\Generic\TemplateTypeMap;
+use PHPStan\Type\IntegerType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Arg;
 
 class DefineMetaParser
 {
@@ -110,26 +117,62 @@ class DefineMetaParser
 
                 if (
                     $node instanceof MethodCall &&
+
+                    // $meta->method()
                     $node->var instanceof Variable &&
-                    $node->var->name === $paramName
+                    $node->var->name === $paramName &&
+
+                    // first arg is always the string key for all methods
+                    $node->args[0] instanceof Arg &&
+                    $node->args[0]->value instanceof String_
                 ) {
 
-                    $types[] = $this->getTypeFromChainedDefinitionMethodCalls($node);
+                    $key = $node->args[0]->value->value;
+                    $type = $this->getTypeFromChainedDefinitionMethodCalls($node);
+
+                    if ($type) {
+                        $types[$key] = $type;
+                    }
 
                 }
 
             }
         );
 
-        return [];
+        return $types;
 
     }
 
-    private function getTypeFromChainedDefinitionMethodCalls(MethodCall $node) : Type
+    private function getTypeFromChainedDefinitionMethodCalls(MethodCall $node) : ?Type
     {
+        
+        if (!$node->name instanceof Identifier)
+            return null;
 
+        $methodName = $node->name->name;
 
+        $type = match ($methodName) {
 
+            'string' => new StringType,
+            'integer' => new IntegerType,
+            'float' => new FloatType,
+            'boolean' => new BooleanType,
+            'enum' => $this->getEnumTypeFromMethodCall($node),
+
+            default => null
+
+        };
+
+        if (!$type)
+            return null;
+
+        return $type;
+
+    }
+
+    private function getEnumTypeFromMethodCall(MethodCall $node) : Type
+    {
+        return new StringType;
     }
 
 }

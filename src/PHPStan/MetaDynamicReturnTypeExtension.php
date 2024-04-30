@@ -7,15 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\Scope;
-use PHPStan\DependencyInjection\Container;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
+use PHPStan\Type\IntegerType;
+use PHPStan\Type\NullType;
 use PHPStan\Type\StaticType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use PhpParser\ParserFactory;
-use PHPStan\Parser\Parser;
 
 class MetaDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
@@ -48,6 +47,12 @@ class MetaDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
             return new StaticType($methodReflection->getDeclaringClass());
         }
 
+        if (!$args[0]->value instanceof String_) {
+            return null;
+        }
+
+        $key = $args[0]->value->value;
+
         $fileName = $methodReflection->getDeclaringClass()->getFileName();
 
         if (!$fileName)
@@ -55,7 +60,7 @@ class MetaDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
 
         $types = $this->defineParser->getTypes($methodReflection, $scope);
 
-        return null;
+        return $types[$key] ?? null;
 
     }
 

@@ -9,10 +9,11 @@ class TestCase
     {
 
         $model = new TestModel;
-        $model->meta('name');
+        $name = $model->meta('name');
+        $isOn = $model->meta('is_on');
 
-        $x = $model->meta(['name' => 'wow']);
-        dumpType($x);
+        dumpType($name);
+        dumpType($isOn);
 
     }
 

@@ -1,16 +1,12 @@
 <?php
 
-use Hyvor\JsonMeta\MetaDefinition;
+namespace Hyvor\JsonMeta\Tests\Types;
+
 use Hyvor\JsonMeta\HasMeta;
+use Hyvor\JsonMeta\MetaDefinition;
 use Illuminate\Database\Eloquent\Model;
-use function PHPStan\dumpType;
-use function PHPStan\Testing\assertType;
 
-enum TestEnum {
-    case HELLO;
-}
-
-class TestModel extends Model
+class TypeTestModel extends Model
 {
 
     use HasMeta;
@@ -20,12 +16,15 @@ class TestModel extends Model
 
         $meta
             ->string('name')
-            ->nullable()
-            ->default(null);
+            ->default('');
 
         $meta
             ->boolean('is_on')
             ->default(false);
+
+        $meta
+            ->integer('age')
+            ->nullable();
 
         /*$ret = $meta->enum('value', TestCase::class)->default(TestCase::HELLO);
         dumpType($ret);*/
