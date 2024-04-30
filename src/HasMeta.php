@@ -31,11 +31,9 @@ trait HasMeta
 
     }
 
-    public function getMeta(string $name)
+    public function getMeta(string $name) : string
     {
-
-
-
+        return '';
     }
 
     public function getAllMeta() : mixed
@@ -48,10 +46,10 @@ trait HasMeta
 
         $fields = $this->metaDefinition->getFields();
         foreach ($fields as $name => $field) {
-            $ret[$name] = array_key_exists($name, $metaFromTable) ? $field->get($metaFromTable[$name]) : $field->getDefault();
+            $ret[$name] = $field->getFromTableMeta($metaFromTable);
         }
 
-        return (object) $ret;
+        return $ret;
 
     }
 
@@ -77,18 +75,16 @@ trait HasMeta
 
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     public function setMeta(array $data) : self
     {
-
-
-
-
         return $this;
-
     }
 
 
-    private function ensureMetaDefinition()
+    private function ensureMetaDefinition() : void
     {
 
         if (!isset($this->metaDefinition)) {

@@ -5,6 +5,11 @@ services:
             - phpstan.broker.dynamicMethodReturnTypeExtension
 
     -
+        class: Hyvor\JsonMeta\PHPStan\DynamicReturnType\MetaAllDynamicReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+
+    -
         class: Hyvor\JsonMeta\PHPStan\DefineMetaParser
         arguments:
             parser: @defaultAnalysisParser

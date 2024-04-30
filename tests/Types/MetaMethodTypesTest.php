@@ -3,6 +3,8 @@
 namespace Hyvor\JsonMeta\Tests\Types;
 
 use ReflectionClass;
+
+use function PHPStan\dumpType;
 use function PHPStan\Testing\assertType;
 
 it('test', function() {
@@ -14,6 +16,8 @@ it('test', function() {
     foreach ($types as $type) {
         $this->assertFileAsserts($type[0], $type[1], ...array_slice($type, 2));
     }
+
+    dumpType($model->getAllMeta());
 
     assertType('string', $model->meta('name'));
     assertType('bool', $model->meta('is_on'));

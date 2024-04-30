@@ -14,6 +14,7 @@ use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PhpParser\Node\Expr\MethodCall;
@@ -22,6 +23,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Arg;
+use PHPStan\Type\UnionType;
 
 class DefineMetaParser
 {
@@ -87,13 +89,7 @@ class DefineMetaParser
             return [];
 
 
-        $methodScope = $scopeFactory->create(
-            ScopeContext::create($fileName),
-            $scope->isDeclareStrictTypes(),
-            [],
-            $methodReflection,
-            $scope->getNamespace()
-        )
+        $methodScope = $scopeFactory->create(ScopeContext::create($fileName))
             ->enterClass($methodReflection->getDeclaringClass())
             ->enterClassMethod(
                 $methodNode,
@@ -128,7 +124,7 @@ class DefineMetaParser
                 ) {
 
                     $key = $node->args[0]->value->value;
-                    $type = $this->getTypeFromChainedDefinitionMethodCalls($node);
+                    $type = $this->getTypeFromChainedDefinitionMethodCalls($node, $types[$key] ?? null);
 
                     if ($type) {
                         $types[$key] = $type;
@@ -143,13 +139,15 @@ class DefineMetaParser
 
     }
 
-    private function getTypeFromChainedDefinitionMethodCalls(MethodCall $node) : ?Type
+    private function getTypeFromChainedDefinitionMethodCalls(MethodCall $node, ?Type $currentType) : ?Type
     {
         
         if (!$node->name instanceof Identifier)
             return null;
 
         $methodName = $node->name->name;
+
+        dump($methodName);
 
         $type = match ($methodName) {
 
@@ -158,6 +156,7 @@ class DefineMetaParser
             'float' => new FloatType,
             'boolean' => new BooleanType,
             'enum' => $this->getEnumTypeFromMethodCall($node),
+            'nullable' => $currentType ? new UnionType([$currentType, new NullType()]) : new NullType(),
 
             default => null
 

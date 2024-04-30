@@ -19,11 +19,11 @@ class TypeTestModel extends Model
             ->default('');
 
         $meta
-            ->boolean('is_on')
+            ->boolean('spam_detection')
             ->default(false);
 
         $meta
-            ->integer('age')
+            ->integer('created_at')
             ->nullable();
 
         /*$ret = $meta->enum('value', TestCase::class)->default(TestCase::HELLO);

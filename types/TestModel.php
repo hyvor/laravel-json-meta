@@ -24,11 +24,12 @@ class TestModel extends Model
             ->default(null);
 
         $meta
-            ->boolean('is_on')
+            ->boolean('spam_detection')
             ->default(false);
 
-        /*$ret = $meta->enum('value', TestCase::class)->default(TestCase::HELLO);
-        dumpType($ret);*/
+        $meta
+            ->integer('created_at')
+            ->nullable();
     }
 
     public function somethingElse() : bool

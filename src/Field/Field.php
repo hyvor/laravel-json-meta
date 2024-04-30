@@ -42,6 +42,16 @@ abstract class Field
     }
 
     /**
+     * @param array<string, mixed> $metaFromTable
+     */
+    public function getFromTableMeta(array $metaFromTable) : mixed
+    {
+        return array_key_exists($this->name, $metaFromTable) ?
+            $this->get($metaFromTable[$this->name]) :
+            $this->getDefault();
+    }
+
+    /**
      * @param mixed $value
      * @return T
      */
