@@ -104,6 +104,8 @@ class DefineMetaParser
         /** @var array<string, Type> $types */
         $types = [];
 
+        dd($methodNode);
+
         $nodeScopeResolver->processNodes(
             $methodNode->stmts,
             $methodScope,
