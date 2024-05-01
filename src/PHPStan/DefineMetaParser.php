@@ -3,6 +3,7 @@
 namespace Hyvor\JsonMeta\PHPStan;
 
 use PhpParser\Node;
+use PHPStan\Analyser\NameScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
@@ -11,8 +12,12 @@ use PHPStan\DependencyInjection\Container;
 use PHPStan\Parser\Parser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
+use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\FloatType;
+use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\NullType;
@@ -104,8 +109,6 @@ class DefineMetaParser
         /** @var array<string, Type> $types */
         $types = [];
 
-        dd($methodNode);
-
         $nodeScopeResolver->processNodes(
             $methodNode->stmts,
             $methodScope,
@@ -119,11 +122,15 @@ class DefineMetaParser
                     $node->var->name === $paramName &&
 
                     // first arg is always the string key for all methods
-                    $node->args[0] instanceof Arg &&
-                    $node->args[0]->value instanceof String_
+                    $node->args[0] instanceof Arg // &&
+                    //$node->args[0]->value instanceof String_
                 ) {
-                    $key = $node->args[0]->value->value;
-                    $type = $this->getTypeFromDefinitionCall($node);
+
+                    $argType = $scope->getType($node->args[0]->value);
+                    $constantStrings = $argType->getConstantStrings();
+
+                    $key = $constantStrings[0]->getValue();
+                    $type = $this->getTypeFromDefinitionCall($node, $scope);
 
                     if ($type && !isset($types[$key])) {
                         $types[$key] = $type;
@@ -147,11 +154,14 @@ class DefineMetaParser
                         if (
                             $check->var instanceof Variable &&
                             $check->var->name === $paramName &&
-                            $check->args[0] instanceof Arg &&
-                            $check->args[0]->value instanceof String_
+                            $check->args[0] instanceof Arg
                         ) {
-                            $key = $check->args[0]->value->value;
-                            $type = $this->getTypeFromDefinitionCall($check);
+
+                            $argType = $scope->getType($check->args[0]->value);
+                            $constantStrings = $argType->getConstantStrings();
+
+                            $key = $constantStrings[0]->getValue();
+                            $type = $this->getTypeFromDefinitionCall($check, $scope);
 
                             if (!$type)
                                 return;
@@ -174,7 +184,7 @@ class DefineMetaParser
 
     }
 
-    private function getTypeFromDefinitionCall(MethodCall $node) : ?Type
+    private function getTypeFromDefinitionCall(MethodCall $node, Scope $scope) : ?Type
     {
         
         if (!$node->name instanceof Identifier)
@@ -188,7 +198,7 @@ class DefineMetaParser
             'integer' => new IntegerType,
             'float' => new FloatType,
             'boolean' => new BooleanType,
-            'enum' => $this->getEnumTypeFromMethodCall($node),
+            'enum' => $this->getEnumTypeFromMethodCall($node, $scope),
 
             default => null
 
@@ -201,9 +211,37 @@ class DefineMetaParser
 
     }
 
-    private function getEnumTypeFromMethodCall(MethodCall $node) : Type
+    private function getEnumTypeFromMethodCall(MethodCall $node, Scope $scope) : ?Type
     {
-        return new StringType;
+        if (count($node->args) !== 2)
+            return null;
+
+        $enumArg = $node->args[1];
+
+        if (!$enumArg instanceof Arg)
+            return null;
+
+        $argType = $scope->getType($enumArg->value);
+
+        if ($argType instanceof ConstantArrayType) {
+
+            $types = [];
+
+            foreach ($argType->getValueTypes() as $type) {
+                $types[] = $type;
+            }
+
+            return new UnionType($types);
+        }
+
+        if (
+            $argType instanceof ConstantStringType &&
+            $argType->isClassStringType()->yes()
+        ) {
+            return new ConstantStringType($argType->getValue(), true);
+        }
+
+        return null;
     }
 
 }

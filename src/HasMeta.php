@@ -8,9 +8,9 @@ trait HasMeta
     private MetaDefinition $metaDefinition;
 
     /**
-     * @template T of key-of<ModelMeta<self>>
+     * @template T of key-of<meta-of<self>>
      * @param T $name
-     * @return ModelMeta<self>[T]
+     * @return meta-of<self>[T]
      */
     public function metaGet(string $name)
     {
@@ -30,7 +30,7 @@ trait HasMeta
     }
 
     /**
-     * @return ModelMeta<self>
+     * @return meta-of<self>
      */
     public function metaGetAll() : mixed
     {
@@ -38,12 +38,16 @@ trait HasMeta
         $this->ensureMetaDefinition();
 
         $metaFromTable = $this->getMetaFromTable();
+
         $ret = [];
 
         $fields = $this->metaDefinition->getFields();
         foreach ($fields as $name => $field) {
             $ret[$name] = $field->getFromTableMeta($metaFromTable);
         }
+
+        /** @var meta-of<self> $ret */ // make phpstan happy
+        $ret = $ret;
 
         return $ret;
 
@@ -56,16 +60,16 @@ trait HasMeta
      * here we check if the given values are of the correct type (statically and dynamically)
      * If not, we throw an exception
      *
-     * @template T of key-of<ModelMeta<self>>
-     * @param ModelMeta<self, true>|T $data
-     * @param ModelMeta<self>[T] $value
+     * @template T of key-of<meta-of<self>>
+     * @param meta-of<self, true>|T $data
+     * @param meta-of<self>[T] $value
      */
     public function metaSet(string|array $data, $value = null) : void
     {
 
         $this->ensureMetaDefinition();
 
-        if (!is_null($value)) {
+        if (is_string($data)) {
             $data = [$data => $value];
         }
 
@@ -106,7 +110,7 @@ trait HasMeta
     private function getMetaFromTable() : array
     {
 
-        $meta = $this->meta;
+        $meta = $this->meta; // @phpstan-ignore-line
 
         if (is_string($meta)) {
             return json_decode($meta, true) ?? [];

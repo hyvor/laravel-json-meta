@@ -3,6 +3,8 @@ parameters:
 	paths:
 		- src
 		- types
+		- tests/TestModel.php
+		- tests/TestModelAdvanced.php
 
 includes:
     - ./extension.neon

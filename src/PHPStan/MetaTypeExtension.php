@@ -10,6 +10,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantArrayTypeBuilder;
 use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\ErrorType;
 use PHPStan\Type\Type;
 
 class MetaTypeExtension implements TypeNodeResolverExtension, TypeNodeResolverAwareExtension
@@ -34,7 +35,7 @@ class MetaTypeExtension implements TypeNodeResolverExtension, TypeNodeResolverAw
         }
 
         $typeName = $typeNode->type;
-        if ($typeName->name !== 'ModelMeta') {
+        if ($typeName->name !== 'meta-of') {
             return null;
         }
 
