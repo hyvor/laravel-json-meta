@@ -45,7 +45,12 @@ class EnumField extends Field
     {
 
         if (is_string($this->enum) && enum_exists($this->enum)) {
-            return $value instanceof $this->enum;
+            if ($value instanceof $this->enum) {
+                return true;
+            } else if (is_string($value) && $this->enum::tryFrom($value) !== null) {
+                return true;
+            }
+            return false;
         } else {
             return in_array($value, $this->enum);
         }

@@ -37,6 +37,12 @@ it('throws an error if default is accessed without setting it', function() {
     $field->getDefault();
 })->throws(Exception::class, 'Default value is not set for the meta field is_active');
 
+it('validation', function() {
+    expect((new BooleanField('is_active'))->validate(true))->toBe(true);
+    expect((new BooleanField('is_active'))->validate(null))->toBe(false);
+    expect((new BooleanField('is_active'))->nullable()->validate(null))->toBe(true);
+});
+
 it('boolean field', function() {
 
     $field = new BooleanField('is_active');
@@ -45,6 +51,14 @@ it('boolean field', function() {
     expect($field->getCastedValue('true'))->toBe(true);
     expect($field->getCastedValue(false))->toBe(false);
     expect($field->getCastedValue(true))->toBe(true);
+
+
+    expect($field->validateValue(true))->toBe(true);
+    expect($field->validateValue(false))->toBe(true);
+    expect($field->validateValue('0'))->toBe(false);
+    expect($field->validateValue('true'))->toBe(false);
+    expect($field->validateValue('false'))->toBe(false);
+    expect($field->validateValue(''))->toBe(false);
 
 });
 
@@ -56,6 +70,10 @@ it('string field', function() {
     expect($field->getCastedValue(null))->toBe('');
     expect($field->getCastedValue(123))->toBe('123');
 
+    expect($field->validateValue('HYVOR'))->toBe(true);
+    expect($field->validateValue(''))->toBe(true);
+    expect($field->validateValue(null))->toBe(false);
+
 });
 
 it('float field', function() {
@@ -65,6 +83,10 @@ it('float field', function() {
     expect($field->getCastedValue(''))->toBe(0.0);
     expect($field->getCastedValue(null))->toBe(0.0);
     expect($field->getCastedValue(123))->toBe(123.0);
+
+    expect($field->validateValue(12.34))->toBe(true);
+    expect($field->validateValue('12.34'))->toBe(false);
+
 
 });
 
@@ -76,6 +98,9 @@ it('integer field', function() {
     expect($field->getCastedValue(null))->toBe(0);
     expect($field->getCastedValue(123))->toBe(123);
 
+    expect($field->validateValue(12))->toBe(true);
+    expect($field->validateValue('12'))->toBe(false);
+
 });
 
 it('enum field', function() {
@@ -83,6 +108,10 @@ it('enum field', function() {
     $field = new EnumField('status', ['active', 'inactive']);
     expect($field->getCastedValue('active'))->toBe('active');
     expect($field->getCastedValue('inactive'))->toBe('inactive');
+
+    expect($field->validateValue('active'))->toBe(true);
+    expect($field->validateValue('inactive'))->toBe(true);
+    expect($field->validateValue('wrong'))->toBe(false);
 
 });
 
@@ -99,6 +128,12 @@ it('enum field with enum class', function() {
     $field = new EnumField('status', CommentsTypeEnum::class);
     expect($field->getCastedValue('hyvor'))->toBe(CommentsTypeEnum::HYVOR);
     expect($field->getCastedValue('other'))->toBe(CommentsTypeEnum::OTHER);
+
+    expect($field->validateValue(CommentsTypeEnum::HYVOR))->toBe(true);
+    expect($field->validateValue(CommentsTypeEnum::OTHER))->toBe(true);
+    expect($field->validateValue('hyvor'))->toBe(true);
+    expect($field->validateValue('other'))->toBe(true);
+    expect($field->validateValue('wrong'))->toBe(false);
 
 });
 

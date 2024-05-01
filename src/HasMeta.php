@@ -51,6 +51,11 @@ trait HasMeta
 
 
     /**
+     * Set meta value
+     * Unlike metaGet (where we try to cast values),
+     * here we check if the given values are of the correct type (statically and dynamically)
+     * If not, we throw an exception
+     *
      * @template T of key-of<ModelMeta<self>>
      * @param ModelMeta<self, true>|T $data
      * @param ModelMeta<self>[T] $value
