@@ -31,7 +31,7 @@ jobs:
           uses: shivammathur/setup-php@v2
           with:
             coverage: "none"
-            php-version: "8.1"
+            php-version: "8.2"
             extensions: pdo, sqlite
             ini-file: development
             tools: composer:v2
@@ -61,7 +61,7 @@ jobs:
           uses: shivammathur/setup-php@v2
           with:
             coverage: "none"
-            php-version: "8.1"
+            php-version: "8.3"
             ini-file: development
 
       -   name: Install dependencies

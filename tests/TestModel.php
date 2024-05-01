@@ -2,31 +2,26 @@
 
 namespace Hyvor\JsonMeta\Tests;
 
-use Definer;
+use Hyvor\JsonMeta\HasMeta;
+use Hyvor\JsonMeta\MetaDefinition;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Metable;
 
 class TestModel extends Model
 {
 
     use HasFactory;
-    use Metable;
+    use HasMeta;
 
     protected $table = 'test_table';
 
-    public function metaDefinition(Definer $definer)
+    public function defineMeta(MetaDefinition $meta) : void
     {
-
-        $definer->add('option_1')->type('string|null')->default(null);
-        $definer->add('option_2')->type('string|int')->default(20);
-
-        // no type checking
-        $definer->add('option_3');
-
+        $meta->string('option_1')->nullable();
+        $meta->integer('option_2')->nullable()->default(20);
     }
 
-    protected static function newFactory()
+    protected static function newFactory() : TestModelFactory
     {
         return TestModelFactory::new();
     }

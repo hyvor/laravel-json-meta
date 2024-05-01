@@ -95,4 +95,6 @@ trait HasMeta
 
     }
 
+    abstract public function defineMeta(MetaDefinition $meta) : void;
+
 }

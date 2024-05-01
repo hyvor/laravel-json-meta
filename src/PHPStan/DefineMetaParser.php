@@ -69,7 +69,7 @@ class DefineMetaParser
         if ($methodNode === null || $methodNode->stmts === null)
             return [];
 
-        // find param name
+        // find param name (field key)
         $paramName = null;
 
         foreach ($methodNode->params as $param) {
@@ -111,10 +111,10 @@ class DefineMetaParser
             $methodScope,
             function (Node $node, Scope $scope) use (&$types, $paramName) : void {
 
-                if (
-                    $node instanceof MethodCall &&
+                if (!$node instanceof MethodCall)
+                    return;
 
-                    // $meta->method()
+                if (
                     $node->var instanceof Variable &&
                     $node->var->name === $paramName &&
 
@@ -122,12 +122,47 @@ class DefineMetaParser
                     $node->args[0] instanceof Arg &&
                     $node->args[0]->value instanceof String_
                 ) {
-
                     $key = $node->args[0]->value->value;
-                    $type = $this->getTypeFromChainedDefinitionMethodCalls($node, $types[$key] ?? null);
+                    $type = $this->getTypeFromDefinitionCall($node);
 
-                    if ($type) {
+                    if ($type && !isset($types[$key])) {
                         $types[$key] = $type;
+                    }
+
+                    return;
+                }
+
+                if (
+                    $node->name instanceof Identifier &&
+                    $node->name->name === 'nullable'
+                ) {
+
+                    // $node is now nullable() method call
+
+                    // go up the chain to find the original method call
+                    $check = $node->var;
+
+                    while ($check instanceof MethodCall) {
+
+                        if (
+                            $check->var instanceof Variable &&
+                            $check->var->name === $paramName &&
+                            $check->args[0] instanceof Arg &&
+                            $check->args[0]->value instanceof String_
+                        ) {
+                            $key = $check->args[0]->value->value;
+                            $type = $this->getTypeFromDefinitionCall($check);
+
+                            if (!$type)
+                                return;
+
+                            $types[$key] = new UnionType([$type, new NullType]);
+
+                            return;
+                        }
+
+                        $check = $check->var;
+
                     }
 
                 }
@@ -139,15 +174,13 @@ class DefineMetaParser
 
     }
 
-    private function getTypeFromChainedDefinitionMethodCalls(MethodCall $node, ?Type $currentType) : ?Type
+    private function getTypeFromDefinitionCall(MethodCall $node) : ?Type
     {
         
         if (!$node->name instanceof Identifier)
             return null;
 
         $methodName = $node->name->name;
-
-        dump($methodName);
 
         $type = match ($methodName) {
 
@@ -156,7 +189,6 @@ class DefineMetaParser
             'float' => new FloatType,
             'boolean' => new BooleanType,
             'enum' => $this->getEnumTypeFromMethodCall($node),
-            'nullable' => $currentType ? new UnionType([$currentType, new NullType()]) : new NullType(),
 
             default => null
 

@@ -8,7 +8,6 @@ use Hyvor\JsonMeta\Field\Field;
 use Hyvor\JsonMeta\Field\FloatField;
 use Hyvor\JsonMeta\Field\IntegerField;
 use Hyvor\JsonMeta\Field\StringField;
-use function PHPStan\dumpType;
 
 class MetaDefinition
 {

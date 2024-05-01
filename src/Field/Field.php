@@ -2,6 +2,8 @@
 
 namespace Hyvor\JsonMeta\Field;
 
+use Exception;
+
 /**
  * @template T
  */
@@ -18,6 +20,8 @@ abstract class Field
      */
     private $default;
 
+    private bool $defaultSet = false;
+
 
     public function __construct(public string $name)
     {}
@@ -27,8 +31,17 @@ abstract class Field
      */
     public function nullable() : self
     {
-        $this->nullable = true;
-        return $this;
+        /** @var self<T | null> $copy */
+        $copy = clone $this;
+
+        $copy->nullable = true;
+
+        if ($copy->defaultSet === false) {
+            $copy->default = null;
+            $copy->defaultSet = true;
+        }
+
+        return $copy;
     }
 
     /**
@@ -38,6 +51,7 @@ abstract class Field
     public function default($default) : self
     {
         $this->default = $default;
+        $this->defaultSet = true;
         return $this;
     }
 
@@ -47,7 +61,7 @@ abstract class Field
     public function getFromTableMeta(array $metaFromTable) : mixed
     {
         return array_key_exists($this->name, $metaFromTable) ?
-            $this->get($metaFromTable[$this->name]) :
+            $this->getNullOrCasted($metaFromTable[$this->name]) :
             $this->getDefault();
     }
 
@@ -55,7 +69,7 @@ abstract class Field
      * @param mixed $value
      * @return T
      */
-    public function get($value)
+    public function getNullOrCasted($value)
     {
         if ($this->nullable && $value === null) {
             /** @var T $ret */
@@ -68,6 +82,9 @@ abstract class Field
 
     public function getDefault() : mixed
     {
+        if ($this->defaultSet === false) {
+            throw new Exception('Default value is not set for the meta field ' . $this->name);
+        }
         return $this->default;
     }
 

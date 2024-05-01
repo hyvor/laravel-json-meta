@@ -8,7 +8,7 @@ namespace Hyvor\JsonMeta\Field;
 class FloatField extends Field
 {
 
-    protected function getCastedValue($value) : float
+    public function getCastedValue($value) : float
     {
         return floatval($value);
     }

@@ -7,13 +7,29 @@ A library for saving metadata in a JSON column, with type checking.
 
 ## Installation
 
+Install the package via composer.
+
 ```bash
 composer require hyvor/laravel-json-meta
 ```
 
+If you use PHPStan, add the following to your `phpstan.neon` file. This improves the type checking of the library.
+
+```neon
+includes:
+    - vendor/hyvor/laravel-json-meta/extension.neon
+```
+
+
+### Metadata or column?
+
+When saving data, you have to decide between meta vs column.  A general rule is that if that data is needed for a `WHERE` or `ORDER BY`, save it in a column. If not, you may save it in metadata. In most cases, configuration options are the best things to save in metadata.
+
+(You can still use metadata in `WHERE` queries if your database engine supports JSON columns.)
+
 ## Usage
 
-Let's do this as a tutorial. The plan is to save metadata of `blogs` in a JSON column named `meta`.
+Let's say you want to save metadata of `blogs` in a JSON column named `meta`.
 
 First, add a JSON `meta` column to the table.
 
@@ -27,26 +43,22 @@ Schema::create('blogs', function (Blueprint $table) {
 
 > If your database does not support native JSON columns, Laravel will create a TEXT column, which works fine with this library.
 
-### Metadata or column?
-
-When saving data, you have to decide between meta vs column.  Our general rule is that if a data is needed for a `WHERE` or `ORDER BY`, save it in a column. If not, you may save it in metadata. In most cases, configuration options are the best things to save in metadata.
-
-(You can still use metadata in `WHERE` queries because we are saving them in a JSON column.)
 
 ### Update the Model
 
-* Add `Metable` trait
-* Declare the `metaDefinition` method
+* Add `HasMeta` trait
+* Declare the `defineMeta` method
 
 ```php
-
+use Hyvor\JsonMeta\HasMeta;
+use Hyvor\JsonMeta\MetaDefinition;
 
 class Blog extends Model
 {
     
-    use Metable;
+    use HasMeta;
     
-    protected function metaDefinition(Definer $definer) 
+    protected function defineMeta(MetaDefinition $meta) 
     {
         // definition goes here
     }
@@ -56,13 +68,15 @@ class Blog extends Model
 
 ### Definition
 
-"Definition" is which data you allow saving in the `meta` field. By defining them, you can make sure that wrong data is never inserted by wrong user input or typos in your code.
-
-You can also define types and default values in the definition.
+"Definition" is which data types you allow saving in the `meta` field. By defining them, you can make sure that incorrect data is never inserted by invalid user input or typos in your code.
 
 ```php
-protected function metaDefinition(Definer $definer)
+protected function defineMeta(MetaDefinition $meta)
 {
+
+    $meta->boolean('seo_indexing')->default(true);
+    $meta->string('seo_robots')->nullable();
+    $meta->integer('max_comments')->default(100);
 
     $definer->add('seo_indexing')
         ->type('bool')
@@ -79,7 +93,7 @@ protected function metaDefinition(Definer $definer)
 }
 ```
 
-This example adds 3 keys. So, your meta field can have these 3 columns, with the declared type.
+
 
 ### Types
 
