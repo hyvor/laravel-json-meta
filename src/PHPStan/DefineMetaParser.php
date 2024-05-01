@@ -9,6 +9,7 @@ use PHPStan\Analyser\ScopeContext;
 use PHPStan\Analyser\ScopeFactory;
 use PHPStan\DependencyInjection\Container;
 use PHPStan\Parser\Parser;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
@@ -37,13 +38,10 @@ class DefineMetaParser
     /**
      * @return array<string, Type>
      */
-    public function getTypes(
-        MethodReflection $methodReflection,
-        Scope $scope
-    ) : array
+    public function getTypes(ClassReflection $classReflection) : array
     {
 
-        $fileName = $methodReflection->getDeclaringClass()->getFileName();
+        $fileName = $classReflection->getFileName();
 
         if (!$fileName)
             return [];
@@ -57,7 +55,7 @@ class DefineMetaParser
         $scopeFactory = $this->container->getByType(ScopeFactory::class);
 
         $classNode = ParserHelper::findClassNode(
-            $methodReflection->getDeclaringClass()->getName(),
+            $classReflection->getName(),
             $fileNodes
         );
 
@@ -90,7 +88,7 @@ class DefineMetaParser
 
 
         $methodScope = $scopeFactory->create(ScopeContext::create($fileName))
-            ->enterClass($methodReflection->getDeclaringClass())
+            ->enterClass($classReflection)
             ->enterClassMethod(
                 $methodNode,
                 TemplateTypeMap::createEmpty(),

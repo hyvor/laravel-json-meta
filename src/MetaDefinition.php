@@ -26,6 +26,19 @@ class MetaDefinition
     }
 
     /**
+     * @return Field<mixed>
+     */
+    public function getField(string $name) : Field
+    {
+        return $this->fields[$name];
+    }
+
+    public function hasField(string $name) : bool
+    {
+        return array_key_exists($name, $this->fields);
+    }
+
+    /**
      * @template FieldType of Field
      * @param class-string<FieldType> $fieldType
      * @return FieldType

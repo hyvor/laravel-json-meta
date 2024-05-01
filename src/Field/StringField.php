@@ -13,4 +13,9 @@ class StringField extends Field
         return strval($value);
     }
 
+    public function validateValue($value): bool
+    {
+        return is_string($value);
+    }
+
 }

@@ -8,35 +8,31 @@ trait HasMeta
     private MetaDefinition $metaDefinition;
 
     /**
-     * @param string|array<string, mixed> $name
-     * @param string|null $value
-     * @return mixed
+     * @template T of key-of<ModelMeta<self>>
+     * @param T $name
+     * @return ModelMeta<self>[T]
      */
-    public function meta(string|array $name = null, string $value = null) : mixed
+    public function metaGet(string $name)
     {
 
-        if (is_null($name)) {
-            return $this->getAllMeta();
+        $this->ensureMetaDefinition();
+
+        $fields = $this->metaDefinition->getFields();
+
+        if (!isset($fields[$name])) {
+            throw new MetaException("Field $name is not defined in the meta definition");
         }
 
-        if (is_array($name)) {
-            return $this->setMeta($name);
-        }
+        $metaFromTable = $this->getMetaFromTable();
 
-        if (func_num_args() === 2) {
-            return $this->setMeta([$name => $value]);
-        }
-
-        return $this->getMeta($name);
+        return $fields[$name]->getFromTableMeta($metaFromTable);
 
     }
 
-    public function getMeta(string $name) : string
-    {
-        return '';
-    }
-
-    public function getAllMeta() : mixed
+    /**
+     * @return ModelMeta<self>
+     */
+    public function metaGetAll() : mixed
     {
 
         $this->ensureMetaDefinition();
@@ -50,6 +46,50 @@ trait HasMeta
         }
 
         return $ret;
+
+    }
+
+
+    /**
+     * @template T of key-of<ModelMeta<self>>
+     * @param ModelMeta<self, true>|T $data
+     * @param ModelMeta<self>[T] $value
+     */
+    public function metaSet(string|array $data, $value = null) : void
+    {
+
+        $this->ensureMetaDefinition();
+
+        if (!is_null($value)) {
+            $data = [$data => $value];
+        }
+
+        $fill = [];
+
+        foreach ($data as $metaName => $metaValue) {
+
+            if (!$this->metaDefinition->hasField($metaName)) {
+                throw new MetaException("Field `$metaName` is not defined in the meta definition of {$this->getTable()}");
+            }
+
+            $field = $this->metaDefinition->getField($metaName);
+
+            if ($field->validate($metaValue) === false) {
+                throw new MetaException(
+                    "Invalid value type for meta `$metaName` in {$this->getTable()} table"
+                );
+            }
+
+            $fill["meta->$metaName"] = $metaValue;
+
+        }
+
+
+        /**
+         * ->update() does not work unless unguarded
+         * There's no reason to guard meta
+         */
+        $this->forceFill($fill)->save();
 
     }
 
@@ -74,15 +114,6 @@ trait HasMeta
         return [];
 
     }
-
-    /**
-     * @param array<mixed> $data
-     */
-    public function setMeta(array $data) : self
-    {
-        return $this;
-    }
-
 
     private function ensureMetaDefinition() : void
     {

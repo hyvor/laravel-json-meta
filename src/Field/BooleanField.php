@@ -13,4 +13,9 @@ class BooleanField extends Field
         return boolval($value);
     }
 
+    public function validateValue($value): bool
+    {
+        return is_bool($value);
+    }
+
 }

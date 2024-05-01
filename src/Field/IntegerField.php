@@ -13,4 +13,9 @@ class IntegerField extends Field
         return intval($value);
     }
 
+    public function validateValue($value): bool
+    {
+        return is_integer($value);
+    }
+
 }

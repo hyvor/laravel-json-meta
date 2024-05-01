@@ -39,4 +39,17 @@ class EnumField extends Field
 
     }
 
+
+
+    public function validateValue($value): bool
+    {
+
+        if (is_string($this->enum) && enum_exists($this->enum)) {
+            return $value instanceof $this->enum;
+        } else {
+            return in_array($value, $this->enum);
+        }
+
+    }
+
 }

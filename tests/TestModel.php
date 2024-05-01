@@ -15,10 +15,18 @@ class TestModel extends Model
 
     protected $table = 'test_table';
 
+    protected $fillable = ['meta'];
+
     public function defineMeta(MetaDefinition $meta) : void
     {
-        $meta->string('option_1')->nullable();
-        $meta->integer('option_2')->nullable()->default(20);
+
+        $meta->string('name')->nullable();
+        $meta->integer('posts_count')->default(0);
+        $meta->boolean('is_active')->default(true);
+        $meta->float('rating')->default(0.0);
+        $meta->enum('status', ['active', 'inactive'])->default('active');
+        $meta->enum('comments', CommentsTypeEnum::class)->default(CommentsTypeEnum::HYVOR);
+
     }
 
     protected static function newFactory() : TestModelFactory

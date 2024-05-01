@@ -12,4 +12,11 @@ class FloatField extends Field
     {
         return floatval($value);
     }
+
+
+
+    public function validateValue($value): bool
+    {
+        return is_float($value);
+    }
 }

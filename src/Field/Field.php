@@ -31,17 +31,15 @@ abstract class Field
      */
     public function nullable() : self
     {
-        /** @var self<T | null> $copy */
-        $copy = clone $this;
 
-        $copy->nullable = true;
+        $this->nullable = true;
 
-        if ($copy->defaultSet === false) {
-            $copy->default = null;
-            $copy->defaultSet = true;
+        if ($this->defaultSet === false) {
+            $this->default = null; // @phpstan-ignore-line
+            $this->defaultSet = true;
         }
 
-        return $copy;
+        return $this;
     }
 
     /**
@@ -88,11 +86,26 @@ abstract class Field
         return $this->default;
     }
 
+    public function validate(mixed $value) : bool
+    {
+        if ($this->nullable && $value === null) {
+            return true;
+        }
+
+        return $this->validateValue($value);
+    }
+
 
     /**
      * @param mixed $value
      * @return T
      */
     abstract protected function getCastedValue($value);
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    abstract protected function validateValue($value) : bool;
 
 }

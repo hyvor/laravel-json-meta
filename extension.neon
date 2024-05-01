@@ -1,13 +1,18 @@
 services:
-    -
-        class: Hyvor\JsonMeta\PHPStan\DynamicReturnType\MetaDynamicReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
+#    -
+#        class: Hyvor\JsonMeta\PHPStan\DynamicReturnType\MetaDynamicReturnTypeExtension
+#        tags:
+#            - phpstan.broker.dynamicMethodReturnTypeExtension
+#
+#    -
+#        class: Hyvor\JsonMeta\PHPStan\DynamicReturnType\MetaAllDynamicReturnTypeExtension
+#        tags:
+#            - phpstan.broker.dynamicMethodReturnTypeExtension
 
     -
-        class: Hyvor\JsonMeta\PHPStan\DynamicReturnType\MetaAllDynamicReturnTypeExtension
+        class: Hyvor\JsonMeta\PHPStan\MetaTypeExtension
         tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
+            - phpstan.phpDoc.typeNodeResolverExtension
 
     -
         class: Hyvor\JsonMeta\PHPStan\DefineMetaParser
