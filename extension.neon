@@ -1,0 +1,10 @@
+services:
+    -
+        class: Hyvor\JsonMeta\PHPStan\MetaTypeExtension
+        tags:
+            - phpstan.phpDoc.typeNodeResolverExtension
+
+    -
+        class: Hyvor\JsonMeta\PHPStan\DefineMetaParser
+        arguments:
+            parser: @defaultAnalysisParser

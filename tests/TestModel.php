@@ -2,8 +2,8 @@
 
 namespace Hyvor\JsonMeta\Tests;
 
-use Hyvor\JsonMeta\Definer;
-use Hyvor\JsonMeta\Metable;
+use Hyvor\JsonMeta\HasMeta;
+use Hyvor\JsonMeta\MetaDefinition;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,22 +11,25 @@ class TestModel extends Model
 {
 
     use HasFactory;
-    use Metable;
+    use HasMeta;
 
     protected $table = 'test_table';
 
-    public function metaDefinition(Definer $definer)
+    protected $fillable = ['meta'];
+
+    public function defineMeta(MetaDefinition $meta) : void
     {
 
-        $definer->add('option_1')->type('string|null')->default(null);
-        $definer->add('option_2')->type('string|int')->default(20);
-
-        // no type checking
-        $definer->add('option_3');
+        $meta->string('name')->nullable();
+        $meta->integer('posts_count')->default(0);
+        $meta->boolean('is_active')->default(true);
+        $meta->float('rating')->default(0.0);
+        $meta->enum('status', ['active', 'inactive'])->default('active');
+        $meta->enum('comments', CommentsTypeEnum::class)->default(CommentsTypeEnum::HYVOR);
 
     }
 
-    protected static function newFactory()
+    protected static function newFactory() : TestModelFactory
     {
         return TestModelFactory::new();
     }
