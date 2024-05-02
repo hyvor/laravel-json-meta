@@ -7,4 +7,4 @@ parameters:
 		- tests/TestModelAdvanced.php
 
 includes:
-    - ./extension.neon
+    - extension.neon
