@@ -108,6 +108,9 @@ trait HasMeta
         return $this->metaDefinition;
     }
 
+    /**
+     * @return string[]
+     */
     public function metaGetFieldNames() : array
     {
         $this->ensureMetaDefinition();
