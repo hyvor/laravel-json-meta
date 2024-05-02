@@ -8,9 +8,9 @@ trait HasMeta
     private MetaDefinition $metaDefinition;
 
     /**
-     * @template T of key-of<meta-of<self>>
-     * @param T $name
-     * @return meta-of<self>[T]
+     * @phpstan-template  T of key-of<meta-of<self>>
+     * @phpstan-param  T $name
+     * @phpstan-return  meta-of<self>[T]
      */
     public function metaGet(string $name)
     {
@@ -30,7 +30,7 @@ trait HasMeta
     }
 
     /**
-     * @return meta-of<self>
+     * @phpstan-return meta-of<self>
      */
     public function metaGetAll() : mixed
     {
@@ -60,9 +60,9 @@ trait HasMeta
      * here we check if the given values are of the correct type (statically and dynamically)
      * If not, we throw an exception
      *
-     * @template T of key-of<meta-of<self>>
-     * @param meta-of<self, true>|T $data
-     * @param meta-of<self>[T] $value
+     * @phpstan-template  T of key-of<meta-of<self>>
+     * @phpstan-param  meta-of<self, true>|T $data
+     * @phpstan-param meta-of<self>[T] $value
      */
     public function metaSet(string|array $data, $value = null) : void
     {
