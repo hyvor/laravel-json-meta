@@ -102,6 +102,18 @@ trait HasMeta
 
     }
 
+    public function metaGetDefinition() : MetaDefinition
+    {
+        $this->ensureMetaDefinition();
+        return $this->metaDefinition;
+    }
+
+    public function metaGetFieldNames() : array
+    {
+        $this->ensureMetaDefinition();
+        return array_keys($this->metaDefinition->getFields());
+    }
+
     /**
      * Get meta from table regardless of the casts used in the model
      * supports string, array, and object
