@@ -1,3 +1,5 @@
+> This package is no longer maintained since 2026-08-11 since are no longer using Laravel. Feel free to fork it. Contact us at foss@hyvor.com if you want to link to your fork from this README.
+
 # Laravel JSON Meta
 
 A library for saving metadata in a JSON column, with strict type checking using PHPStan.
